@@ -60,20 +60,20 @@ jobs:
           echo "Writing environment variables to .env file"
           
           cat > .env <<EOL
-          echo "NODE_ENV=${{ vars.NODE_ENV }}" >> $REPO_DIR/.env
-          echo "PORT=${{ vars.PORT }}" >> $REPO_DIR/.env
-          echo "HOST=${{ vars.HOST }}" >> $REPO_DIR/.env
-          echo "FINVU_BASE_URL=${{ vars.FINVU_BASE_URL }}" >> $REPO_DIR/.env
-          echo "FINVU_USER_ID=${{ vars.FINVU_USER_ID }}" >> $REPO_DIR/.env
-          echo "FINVU_PASSWORD=${{ secrets.FINVU_PASSWORD }}" >> $REPO_DIR/.env
-          echo "FINVU_RETURN_URL=${{ vars.FINVU_RETURN_URL }}" >> $REPO_DIR/.env
-          echo "FINVU_AA_ID=${{ vars.FINVU_AA_ID }}" >> $REPO_DIR/.env
-          echo "REDIS_USERNAME=${{ vars.REDIS_USERNAME }}" >> $REPO_DIR/.env
-          echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> $REPO_DIR/.env
-          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> $REPO_DIR/.env
-          echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> $REPO_DIR/.env
-          echo "LOKI_HOST=${{ vars.LOKI_HOST }}" >> \$REPO_DIR/.env
-          echo "TRACE_URL=${{ vars.TRACE_URL }}" >> \$REPO_DIR/.env
+          NODE_ENV=${{ vars.NODE_ENV }}
+          PORT=${{ vars.PORT }}
+          HOST=${{ vars.HOST }}
+          FINVU_BASE_URL=${{ vars.FINVU_BASE_URL }}
+          FINVU_USER_ID=${{ vars.FINVU_USER_ID }}
+          FINVU_PASSWORD=${{ secrets.FINVU_PASSWORD }}
+          FINVU_RETURN_URL=${{ vars.FINVU_RETURN_URL }}
+          FINVU_AA_ID=${{ vars.FINVU_AA_ID }}
+          REDIS_USERNAME=${{ vars.REDIS_USERNAME }}
+          REDIS_HOST=${{ vars.REDIS_HOST }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          REDIS_PORT=${{ vars.REDIS_PORT }}
+          LOKI_HOST=${{ vars.LOKI_HOST }}
+          TRACE_URL=${{ vars.TRACE_URL }}
           EOL
           EOF
 
@@ -166,22 +166,23 @@ jobs:
           ssh -i ./key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} <<EOF
           REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-${{ github.ref_name }}
           echo "Writing environment variables to .env file"
-
-          echo "NODE_ENV=${{ vars.NODE_ENV }}" >> $REPO_DIR/.env
-          echo "PORT=${{ vars.PORT }}" >> $REPO_DIR/.env
-          echo "HOST=${{ vars.HOST }}" >> $REPO_DIR/.env
-          echo "FINVU_BASE_URL=${{ vars.FINVU_BASE_URL }}" >> $REPO_DIR/.env
-          echo "FINVU_USER_ID=${{ vars.FINVU_USER_ID }}" >> $REPO_DIR/.env
-          echo "FINVU_PASSWORD=${{ secrets.FINVU_PASSWORD }}" >> $REPO_DIR/.env
-          echo "FINVU_RETURN_URL=${{ vars.FINVU_RETURN_URL }}" >> $REPO_DIR/.env
-          echo "FINVU_AA_ID=${{ vars.FINVU_AA_ID }}" >> $REPO_DIR/.env
-          echo "REDIS_USERNAME=${{ vars.REDIS_USERNAME }}" >> $REPO_DIR/.env
-          echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> $REPO_DIR/.env
-          echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> $REPO_DIR/.env
-          echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> $REPO_DIR/.env
-          echo "LOKI_HOST=${{ vars.LOKI_HOST }}" >> \$REPO_DIR/.env
-          echo "TRACE_URL=${{ vars.TRACE_URL }}" >> \$REPO_DIR/.env
-
+          cd "$REPO_DIR"
+          cat > .env <<EOL
+          NODE_ENV=${{ vars.NODE_ENV }}
+          PORT=${{ vars.PORT }}
+          HOST=${{ vars.HOST }}
+          FINVU_BASE_URL=${{ vars.FINVU_BASE_URL }}
+          FINVU_USER_ID=${{ vars.FINVU_USER_ID }}
+          FINVU_PASSWORD=${{ secrets.FINVU_PASSWORD }}
+          FINVU_RETURN_URL=${{ vars.FINVU_RETURN_URL }}
+          FINVU_AA_ID=${{ vars.FINVU_AA_ID }}
+          REDIS_USERNAME=${{ vars.REDIS_USERNAME }}
+          REDIS_HOST=${{ vars.REDIS_HOST }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+          REDIS_PORT=${{ vars.REDIS_PORT }}
+          LOKI_HOST=${{ vars.LOKI_HOST }}
+          TRACE_URL=${{ vars.TRACE_URL }}
+          EOL
           EOF
 
       - name: Verify .env and docker-compose.yml files
