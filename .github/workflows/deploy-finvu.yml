@@ -34,7 +34,7 @@ jobs:
           rm -rf \$REPO_DIR
           echo "Cloning repository from main branch"
           git clone --single-branch --branch main https://github.com/ONDC-Official/automation-finvu-aa-service.git \$REPO_DIR
-            EOF
+          EOF
 
       - name: Install Docker Compose (if not installed)
         run: |
