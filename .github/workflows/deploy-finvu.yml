@@ -53,12 +53,15 @@ jobs:
       - name: Write secrets to .env on EC2
         run: |
           echo "Writing secrets to .env file"
-          ssh -i ./key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} <<EOF
+      
+          ssh -i ./key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} <<'EOF'
           REPO_DIR=~/ONDC-automation-framework/finvu-aa-service-${{ github.ref_name }}/automation-finvu-aa-service
-          # REPO_DIR=~/ONDC-automation-framework/finvu-aa-service-${{ github.ref_name }}
-          cd "$REPO_DIR"
-          echo "Writing environment variables to .env file"
-          
+      
+          echo "Writing environment variables to .env file in \$REPO_DIR"
+      
+          mkdir -p "$REPO_DIR"
+          cd "$REPO_DIR" || exit 1
+      
           cat > .env <<EOL
           NODE_ENV=${{ vars.NODE_ENV }}
           PORT=${{ vars.PORT }}
@@ -75,7 +78,11 @@ jobs:
           LOKI_HOST=${{ vars.LOKI_HOST }}
           TRACE_URL=${{ vars.TRACE_URL }}
           EOL
+      
+          echo ".env file successfully written at \$REPO_DIR/.env"
+          ls -l "$REPO_DIR/.env"
           EOF
+
 
       - name: Verify .env and docker-compose.yml files
         run: |
