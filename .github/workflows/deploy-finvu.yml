@@ -48,7 +48,7 @@ jobs:
           else
             echo "Docker Compose is already installed."
           fi
-            EOF
+          EOF
 
       - name: Write secrets to .env on EC2
         run: |
