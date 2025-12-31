@@ -125,7 +125,13 @@ class FinvuAAService {
     const lspId = request.lspId || config.finvu.lspId;
     const returnUrl = request.returnUrl || `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
     const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
-    const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
+    // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
+    const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber
+                       || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
+    console.log("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data?.personal_loan_information_form);
+    console.log("sessionData", sessionData);
+    console.log("contactNumber", contactNumber);
+    const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
 
       const consentHandles = request.consentHandles || sessionData?.consent_handler ? [sessionData?.consent_handler] : []
       const requestBody = {
