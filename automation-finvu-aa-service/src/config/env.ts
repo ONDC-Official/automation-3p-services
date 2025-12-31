@@ -30,7 +30,7 @@ export const config = {
     password: process.env.FINVU_PASSWORD!,
     
     // Defaults
-    defaultTemplate: process.env.FINVU_DEFAULT_TEMPLATE || 'FINVUDEMO_PERIODIC',
+    defaultTemplate: process.env.FINVU_DEFAULT_TEMPLATE || 'FINVUDEMO_TESTING',
     lspId: process.env.FINVU_LSP_ID || 'loanseva',
     redirectUrl: process.env.FINVU_REDIRECT_URL || 'https://sdkredirect.finvu.in/',
     returnUrl: process.env.FINVU_RETURN_URL || 'http://localhost:8000/buyer/post-aa-consent',
