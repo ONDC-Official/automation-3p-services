@@ -131,8 +131,8 @@ class FinvuAAService {
     console.log("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data);
     console.log("sessionData", sessionData);
     console.log("contactNumber", contactNumber);
-    //const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
-     const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
+    const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
+     //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
       const consentHandles = request.consentHandles || sessionData?.consent_handler ? [sessionData?.consent_handler] : []
       const requestBody = {
         header: {
