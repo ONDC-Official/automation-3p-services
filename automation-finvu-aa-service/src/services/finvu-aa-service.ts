@@ -26,11 +26,25 @@ class FinvuAAService {
   async generateConsentHandler(
     request: ConsentGenerateRequest
   ): Promise<ConsentGenerateResponse> {
+    logger.info('🚀 generateConsentHandler called', {
+      custId: request.custId,
+      templateName: request.templateName,
+      timestamp: new Date().toISOString(),
+      requestDetails: JSON.stringify(request)
+    });
+
     const token = await tokenService.getToken();
-    
+
     const templateName = request.templateName || config.finvu.defaultTemplate;
     const consentDescription = request.consentDescription || config.finvu.consentDescription;
     const redirectUrl = request.redirectUrl || "https://google.co.in";
+
+    logger.info('📋 Using configuration', {
+      templateName,
+      consentDescription,
+      redirectUrl,
+      aaId: config.finvu.aaId
+    });
 
     // Default Purpose structure as per Finvu API requirements
     const purpose = {
@@ -66,6 +80,16 @@ class FinvuAAService {
     try {
       logger.info('Generating consent handler', { custId: request.custId });
 
+      logger.info('📡 Calling Finvu API ConsentRequestPlus', {
+        url: `${config.finvu.baseUrl}/ConsentRequestPlus`,
+        custId: request.custId,
+        requestBodySample: {
+          header: requestBody.header,
+          custId: requestBody.body.custId,
+          templateName: requestBody.body.templateName
+        }
+      });
+
       const response = await httpClient.post<FinvuAPIResponse>(
         `${config.finvu.baseUrl}/ConsentRequestPlus`,
         requestBody,
@@ -73,6 +97,12 @@ class FinvuAAService {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
+
+      logger.info('✅ Finvu API response received', {
+        consentHandler: response.body.ConsentHandle,
+        hasUrl: !!response.body.url,
+        responseTimestamp: new Date().toISOString()
+      });
 
       const result: ConsentGenerateResponse = {
         consentHandler: response.body.ConsentHandle,
@@ -82,9 +112,11 @@ class FinvuAAService {
         url: response.body.url
       };
 
-      logger.info('Consent handler generated successfully', {
+      logger.info('✨ Consent handler generated successfully - RETURNING NEW HANDLER', {
         custId: request.custId,
-        consentHandler: result.consentHandler
+        consentHandler: result.consentHandler,
+        consentHandlerLength: result.consentHandler?.length,
+        timestamp: new Date().toISOString()
       });
 
       return result;
@@ -105,7 +137,7 @@ class FinvuAAService {
     // ========== GET SESSION DATA FROM REDIS ==========
     let sessionData = null;
     const sessionKey = request?.transactionId;
-    
+
     if (sessionKey) {
       sessionData = await sessionService.getSessionData(sessionKey);
 
@@ -121,24 +153,24 @@ class FinvuAAService {
 
       }
     }
-    
+
     const lspId = request.lspId || config.finvu.lspId;
     const returnUrl = request.returnUrl || `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
     const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
     const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber
-                       || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
+      || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
     console.log("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data);
     console.log("sessionData", sessionData);
     console.log("contactNumber", contactNumber);
     const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
-     //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
-      const consentHandles = request.consentHandles || sessionData?.consent_handler ? [sessionData?.consent_handler] : []
-      const requestBody = {
-        header: {
-          ts: this.generateTimestamp(),
-          channelId: 'finsense',
-          rid: this.generateId()
+    //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
+    const consentHandles = request.consentHandles || sessionData?.consent_handler ? [sessionData?.consent_handler] : []
+    const requestBody = {
+      header: {
+        ts: this.generateTimestamp(),
+        channelId: 'finsense',
+        rid: this.generateId()
       },
       body: {
         lspId,
