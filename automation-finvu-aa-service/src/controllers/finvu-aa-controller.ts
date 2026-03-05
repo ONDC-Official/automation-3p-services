@@ -4,6 +4,8 @@ import logger from '../utils/logger';
 import { RedisService } from 'ondc-automation-cache-lib';
 
 export const generateConsentHandler = async (req: Request, res: Response) => {
+
+  logger.info("req.body generate", req.body);
   try {
     logger.info('🔵 Incoming request to /consent/generate', {
       timestamp: new Date().toISOString(),
@@ -49,6 +51,7 @@ export const generateConsentHandler = async (req: Request, res: Response) => {
 };
 
 export const verifyConsentHandler = async (req: Request, res: Response) => {
+  logger.info("req.body verify", req.body);
   try {
     const {
       userId,
