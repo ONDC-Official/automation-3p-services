@@ -149,6 +149,9 @@ class FinvuAAService {
           hasConsentHandler: !!sessionData.consentHandler,
           message_id: sessionData.message_id
         });
+        logger.info("sessionData?.form_data", sessionData?.form_data);
+        logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
+        logger.info("contactNumber in finvu service", sessionData?.form_data.personal_loan_information_form?.contactNumber);
 
 
       }
