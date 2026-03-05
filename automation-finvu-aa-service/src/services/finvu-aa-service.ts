@@ -160,12 +160,16 @@ class FinvuAAService {
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
     const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber
       || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
-    console.log("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data);
-    console.log("sessionData", sessionData);
-    console.log("contactNumber", contactNumber);
+    logger.info("sessionData?.form_data", sessionData?.form_data);
+    logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
+    logger.info("contactNumber in finvu service", contactNumber);
+    logger.info('Contact number in finvu service', {
+      contactNumber
+    });
     const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
     //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
-    const consentHandles = request.consentHandles || sessionData?.consent_handler ? [sessionData?.consent_handler] : []
+    const consentHandles = request.consentHandles 
+  || (sessionData?.consent_handler ? [sessionData.consent_handler] : [])
     const requestBody = {
       header: {
         ts: this.generateTimestamp(),
