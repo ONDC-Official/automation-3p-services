@@ -8,7 +8,7 @@ import {
   ConsentVerifyResponse,
   FinvuAPIResponse
 } from '../types/finvu-aa-types';
-import logger from '../utils/logger';
+import logger from '@ondc/automation-logger';
 import { sessionService } from './session-service';
 
 class FinvuAAService {
@@ -171,8 +171,8 @@ class FinvuAAService {
     });
     const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
     //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
-    const consentHandles = request.consentHandles 
-  || (sessionData?.consent_handler ? [sessionData.consent_handler] : [])
+    const consentHandles = request.consentHandles
+      || (sessionData?.consent_handler ? [sessionData.consent_handler] : [])
     const requestBody = {
       header: {
         ts: this.generateTimestamp(),
