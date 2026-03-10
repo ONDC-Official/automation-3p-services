@@ -218,7 +218,7 @@ class FinvuAAService {
       return result;
     } catch (error: any) {
       logger.error('Failed to verify consent handler', {
-
+        sessionData: JSON.stringify(sessionData),
         error: error.message
       });
       throw new Error(`Failed to verify consent handler: ${error.message}`);
