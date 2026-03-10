@@ -42,7 +42,7 @@ class SessionService {
       }
 
       const sessionData = JSON.parse(rawData) as SessionData;
-      
+
       logger.info('Session data retrieved successfully', {
         sessionKey,
         hasConsentHandler: !!sessionData.consentHandler,
@@ -67,7 +67,7 @@ class SessionService {
    * @returns true if successful, false otherwise
    */
   async updateSessionData(
-    sessionKey: string, 
+    sessionKey: string,
     updates: Partial<SessionData>
   ): Promise<boolean> {
     try {
@@ -86,9 +86,9 @@ class SessionService {
       // Save back to Redis
       await RedisService.setKey(sessionKey, JSON.stringify(updatedData));
 
-      logger.info('Session data updated successfully', { 
+      logger.info('Session data updated successfully', {
         sessionKey,
-        updatedFields: Object.keys(updates) 
+        updatedFields: Object.keys(updates)
       });
 
       return true;
@@ -109,7 +109,7 @@ class SessionService {
    * @returns true if successful, false otherwise
    */
   async saveSessionData(
-    sessionKey: string, 
+    sessionKey: string,
     sessionData: SessionData,
     ttl?: number
   ): Promise<boolean> {
@@ -117,7 +117,7 @@ class SessionService {
       logger.info('Saving session data to Redis', { sessionKey, ttl });
 
       await RedisService.setKey(
-        sessionKey, 
+        sessionKey,
         JSON.stringify(sessionData),
         ttl
       );
