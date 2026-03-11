@@ -162,14 +162,14 @@ class FinvuAAService {
     const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
     const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber 
-      || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber || "6284870148@finvu";
+      || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
     logger.info("sessionData?.form_data", sessionData?.form_data);
     logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
     logger.info("contactNumber in finvu service", contactNumber);
     logger.info('Contact number in finvu service', {
       contactNumber
     });
-    const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
+    const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined) || "6284870148@finvu";
     //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
     const consentHandles = request.consentHandles
       || (sessionData?.consent_handler ? [sessionData.consent_handler] : []) || ["71bdc3ac-c310-4232-ab1d-36184bb61442"]
