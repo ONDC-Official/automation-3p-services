@@ -157,12 +157,12 @@ class FinvuAAService {
       }
     }
 
-    const lspId = request.lspId || config.finvu.lspId;
+    const lspId = request.lspId || config.finvu.lspId || "loanseva";
     const returnUrl = request.returnUrl || `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
     const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
-    const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber
-      || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
+    const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber 
+      || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber || "6284870148@finvu";
     logger.info("sessionData?.form_data", sessionData?.form_data);
     logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
     logger.info("contactNumber in finvu service", contactNumber);
@@ -172,7 +172,7 @@ class FinvuAAService {
     const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined);
     //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
     const consentHandles = request.consentHandles
-      || (sessionData?.consent_handler ? [sessionData.consent_handler] : [])
+      || (sessionData?.consent_handler ? [sessionData.consent_handler] : []) || ["71bdc3ac-c310-4232-ab1d-36184bb61442"]
     const requestBody = {
       header: {
         ts: this.generateTimestamp(),
@@ -187,6 +187,8 @@ class FinvuAAService {
         returnUrl
       }
     };
+
+    logger.info("RequestBody: ", requestBody)
 
     try {
       logger.info('Verifying consent handler', {
