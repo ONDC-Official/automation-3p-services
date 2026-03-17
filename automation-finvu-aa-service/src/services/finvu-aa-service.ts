@@ -207,8 +207,7 @@ class FinvuAAService {
 
 
       const result: ConsentVerifyResponse = {
-
-        url: response.body.url
+        url: response.body.url ? response.body.url.replace('https://sdkredirect.finvu.in', 'https://reactjssdk.finvu.in') : response.body.url
       };
 
 
