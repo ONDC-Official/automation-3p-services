@@ -1,6 +1,7 @@
 import { config } from '../config/env';
 import { httpClient } from '../utils/http-client';
 import { tokenService } from './token-service';
+import { RedisService } from 'ondc-automation-cache-lib';
 import {
   ConsentGenerateRequest,
   ConsentGenerateResponse,
@@ -151,21 +152,34 @@ class FinvuAAService {
         });
         logger.info("sessionData?.form_data", sessionData?.form_data);
         logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
-        logger.info("contactNumber in finvu service", sessionData?.form_data.personal_loan_information_form?.contactNumber);
-
-
+        logger.info("contactNumber in finvu service from sessionData", sessionData?.form_data.personal_loan_information_form?.contactNumber);
       }
+    }
+
+    let dedicatedFormData: any = null;
+    if (sessionData && sessionData.transaction_id) {
+      const dedicatedKey = `form_data_${sessionData.transaction_id}`;
+      const dedicatedRaw = await RedisService.getKey(dedicatedKey);
+      dedicatedFormData = dedicatedRaw ? JSON.parse(dedicatedRaw) : null;
+      logger.info("dedicatedFormData from form_data_ key+++++++++", dedicatedFormData);
     }
 
     const lspId = request.lspId || config.finvu.lspId || "loanseva";
     const returnUrl = request.returnUrl || `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
     const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
-    const contactNumber = sessionData?.form_data?.personal_loan_information_form?.contactNumber 
-      || sessionData?.form_data?.consumer_information_form?.contactNumber || sessionData?.form_data?.personal_details_information_form?.contactNumber;
+    
+    const contactNumber = 
+      dedicatedFormData?.personal_loan_information_form?.contactNumber ||
+      dedicatedFormData?.consumer_information_form?.contactNumber ||
+      dedicatedFormData?.personal_details_information_form?.contactNumber ||
+      sessionData?.form_data?.personal_loan_information_form?.contactNumber || 
+      sessionData?.form_data?.consumer_information_form?.contactNumber || 
+      sessionData?.form_data?.personal_details_information_form?.contactNumber;
+      
     logger.info("sessionData?.form_data", sessionData?.form_data);
     logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
-    logger.info("contactNumber in finvu service", contactNumber);
+    logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
     logger.info('Contact number in finvu service', {
       contactNumber
     });
