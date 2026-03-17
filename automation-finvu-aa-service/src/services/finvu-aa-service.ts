@@ -35,7 +35,7 @@ class FinvuAAService {
 
     const token = await tokenService.getToken();
 
-    const templateName = "CT003_Monitoring" || request.templateName || config.finvu.defaultTemplate;
+    const templateName = request.templateName || "CT003_Monitoring";
     const consentDescription = request.consentDescription || config.finvu.consentDescription;
     const redirectUrl = request.redirectUrl || "https://google.co.in";
 
