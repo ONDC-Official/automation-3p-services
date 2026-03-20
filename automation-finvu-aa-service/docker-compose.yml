@@ -3,7 +3,7 @@ version: '3.8'
 services:
   finvu-aa-service:
     build: .
-    container_name: automation-finvu-aa-service
+    container_name: automation-finvu-aa-service-staging
     ports:
       - "${PORT:-3002}:${PORT:-3002}"
     env_file:
