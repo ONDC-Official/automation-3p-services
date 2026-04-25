@@ -137,23 +137,54 @@ class FinvuAAService {
 
     // ========== GET SESSION DATA FROM REDIS ==========
     let sessionData = null;
-    const sessionKey = request?.transactionId;
+    const transactionId = request?.transactionId;
+    const uiSessionId = request?.sessionId;
 
-    if (sessionKey) {
-      sessionData = await sessionService.getSessionData(sessionKey);
+    logger.info('[FINVU] verifyConsentHandler called', { transactionId, uiSessionId });
 
-      if (sessionData) {
-        logger.info('Session data available for consent verification', {
-          sessionKey,
-          transaction_id: sessionData.transaction_id,
-          customer_id: sessionData.customer_id,
-          hasConsentHandler: !!sessionData.consentHandler,
-          message_id: sessionData.message_id
-        });
-        logger.info("sessionData?.form_data", sessionData?.form_data);
-        logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
-        logger.info("contactNumber in finvu service from sessionData", sessionData?.form_data.personal_loan_information_form?.contactNumber);
+    if (transactionId) {
+      let resolvedKey = transactionId;
+
+      if (uiSessionId) {
+        logger.info('[FINVU] Fetching ui-session-data from Redis', { uiSessionId });
+        try {
+          const uiSessionRaw = await RedisService.getKey(uiSessionId);
+          logger.info('[FINVU] ui-session-data raw value', { uiSessionId, found: !!uiSessionRaw, value: uiSessionRaw });
+
+          if (uiSessionRaw) {
+            const uiSessionData = JSON.parse(uiSessionRaw);
+            logger.info('[FINVU] ui-session-data parsed', { uiSessionData });
+
+            const subUrl = uiSessionData?.subscriberUrl;
+            logger.info('[FINVU] subscriberUrl extracted from ui-session-data', { subUrl });
+
+            if (subUrl) {
+              resolvedKey = `MOCK_DATA::${transactionId}::${subUrl}`;
+              logger.info('[FINVU] Resolved composite Redis key', { resolvedKey });
+            } else {
+              logger.info('[FINVU] subscriberUrl not found — using bare transactionId', { resolvedKey });
+            }
+          } else {
+            logger.info('[FINVU] ui-session-data not found in Redis — using bare transactionId', { uiSessionId, resolvedKey });
+          }
+        } catch (uiErr: any) {
+          logger.error('[FINVU] Error fetching ui-session-data', { uiSessionId, error: uiErr.message });
+        }
+      } else {
+        logger.info('[FINVU] No sessionId provided — using transactionId directly', { resolvedKey });
       }
+
+      logger.info('[FINVU] Fetching session data with key', { resolvedKey });
+      sessionData = await sessionService.getSessionData(resolvedKey);
+      logger.info('[FINVU] Session data fetched', {
+        resolvedKey,
+        found: !!sessionData,
+        transaction_id: sessionData?.transaction_id,
+        hasConsentHandler: !!sessionData?.consent_handler,
+        hasFormData: !!sessionData?.form_data
+      });
+    } else {
+      logger.info('[FINVU] No transactionId provided — cannot fetch session data');
     }
 
     let dedicatedFormData: any = null;
@@ -164,9 +195,9 @@ class FinvuAAService {
       logger.info("dedicatedFormData from form_data_ key+++++++++", dedicatedFormData);
     }
 
-    const lspId = request.lspId || config.finvu.lspId || "loanseva";
-    const returnUrl = request.returnUrl || `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
-    const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
+    const lspId = config.finvu.lspId || "loanseva";
+    const returnUrl = `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
+    const redirectUrl = config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
 
     const contactNumber =
@@ -178,15 +209,14 @@ class FinvuAAService {
       sessionData?.form_data?.personal_details_information_form?.contactNumber;
 
     logger.info("sessionData?.form_data", sessionData?.form_data);
-    logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
+    logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data?.personal_loan_information_form);
     logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
-    logger.info('Contact number in finvu service', {
-      contactNumber
-    });
-    const cust_id = request.userId || (contactNumber ? contactNumber + "@finvu" : undefined) || "6284870148@finvu";
-    //const cust_id = request.userId || sessionData?.form_data?.consumer_information_form?.contactNumber+"@finvu"
-    const consentHandles = request.consentHandles
-      || (sessionData?.consent_handler ? [sessionData.consent_handler] : []) || ["71bdc3ac-c310-4232-ab1d-36184bb61442"]
+    logger.info('Contact number in finvu service', { contactNumber });
+
+    const cust_id = (contactNumber ? contactNumber + "@finvu" : undefined) || "6284870148@finvu";
+    const consentHandles = sessionData?.consent_handler
+      ? [sessionData.consent_handler]
+      : ["71bdc3ac-c310-4232-ab1d-36184bb61442"];
     const requestBody = {
       header: {
         ts: this.generateTimestamp(),
