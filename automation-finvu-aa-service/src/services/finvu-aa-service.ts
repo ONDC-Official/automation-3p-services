@@ -168,15 +168,15 @@ class FinvuAAService {
     const returnUrl = request.returnUrl || `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
     const redirectUrl = request.redirectUrl || config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
-    
-    const contactNumber = 
+
+    const contactNumber =
       dedicatedFormData?.personal_loan_information_form?.contactNumber ||
       dedicatedFormData?.consumer_information_form?.contactNumber ||
       dedicatedFormData?.personal_details_information_form?.contactNumber ||
-      sessionData?.form_data?.personal_loan_information_form?.contactNumber || 
-      sessionData?.form_data?.consumer_information_form?.contactNumber || 
+      sessionData?.form_data?.personal_loan_information_form?.contactNumber ||
+      sessionData?.form_data?.consumer_information_form?.contactNumber ||
       sessionData?.form_data?.personal_details_information_form?.contactNumber;
-      
+
     logger.info("sessionData?.form_data", sessionData?.form_data);
     logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data.personal_loan_information_form);
     logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
