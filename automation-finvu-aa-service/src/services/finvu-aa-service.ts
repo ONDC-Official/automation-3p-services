@@ -133,6 +133,8 @@ class FinvuAAService {
   async verifyConsentHandler(
     request: ConsentVerifyRequest
   ): Promise<ConsentVerifyResponse> {
+    logger.info('[FINVU] verifyConsentHandler called', JSON.stringify(request));
+
     const token = await tokenService.getToken();
 
     // ========== GET SESSION DATA FROM REDIS ==========
