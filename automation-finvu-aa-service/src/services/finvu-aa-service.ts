@@ -190,15 +190,15 @@ class FinvuAAService {
     }
 
     let dedicatedFormData: any = null;
-    if (sessionData && sessionData.transaction_id) {
-      const dedicatedKey = `form_data_${sessionData.transaction_id}`;
+    if (transactionId) {
+      const dedicatedKey = `form_data_${transactionId}`;
       const dedicatedRaw = await RedisService.getKey(dedicatedKey);
       dedicatedFormData = dedicatedRaw ? JSON.parse(dedicatedRaw) : null;
       logger.info("dedicatedFormData from form_data_ key+++++++++", dedicatedFormData);
     }
 
     const lspId = config.finvu.lspId || "loanseva";
-    const returnUrl = `${config.finvu.returnUrl}?session_id=${sessionData?.session_id}&transaction_id=${sessionData?.transaction_id}`;
+    const returnUrl = `${config.finvu.returnUrl}?session_id=${uiSessionId}&transaction_id=${transactionId}`;
     const redirectUrl = config.finvu.redirectUrl;
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
 
@@ -215,12 +215,12 @@ class FinvuAAService {
     logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
     logger.info('Contact number in finvu service', { contactNumber });
 
-    const cust_id = "6284870148@finvu"//(contactNumber ? contactNumber + "@finvu" : undefined) || "6284870148@finvu";
-    const consentHandles = ["09970903-dd2b-40f8-ab65-924e06155a4c"]
+    const cust_id = contactNumber ? contactNumber + "@finvu" : "6284870148@finvu";
+    const consentHandles = sessionData?.consent_handler
+      ? sessionData.consent_handler
+      : ["71bdc3ac-c310-4232-ab1d-36184bb61442"];
 
-    // sessionData?.consent_handler
-    //   ? [sessionData.consent_handler]
-    //   : ["71bdc3ac-c310-4232-ab1d-36184bb61442"];
+
     const requestBody = {
       header: {
         ts: this.generateTimestamp(),
