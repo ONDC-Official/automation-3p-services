@@ -213,10 +213,12 @@ class FinvuAAService {
     logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
     logger.info('Contact number in finvu service', { contactNumber });
 
-    const cust_id = (contactNumber ? contactNumber + "@finvu" : undefined) || "6284870148@finvu";
-    const consentHandles = sessionData?.consent_handler
-      ? [sessionData.consent_handler]
-      : ["71bdc3ac-c310-4232-ab1d-36184bb61442"];
+    const cust_id = "6284870148@finvu"//(contactNumber ? contactNumber + "@finvu" : undefined) || "6284870148@finvu";
+    const consentHandles = ["09970903-dd2b-40f8-ab65-924e06155a4c"]
+
+    // sessionData?.consent_handler
+    //   ? [sessionData.consent_handler]
+    //   : ["71bdc3ac-c310-4232-ab1d-36184bb61442"];
     const requestBody = {
       header: {
         ts: this.generateTimestamp(),

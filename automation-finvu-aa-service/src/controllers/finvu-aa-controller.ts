@@ -51,9 +51,9 @@ export const generateConsentHandler = async (req: Request, res: Response) => {
 };
 
 export const verifyConsentHandler = async (req: Request, res: Response) => {
-  logger.info("req.body verify");
+  logger.info("req.body verify", JSON.stringify(req.body));
   try {
-    const {
+    let {
       userId,
       consentHandles,
       lspId,
@@ -72,7 +72,6 @@ export const verifyConsentHandler = async (req: Request, res: Response) => {
     //     message: 'userId and consentHandles (array) are required'
     //   });
     // }
-
     const result = await finvuAAService.verifyConsentHandler({
       userId,
       consentHandles,
