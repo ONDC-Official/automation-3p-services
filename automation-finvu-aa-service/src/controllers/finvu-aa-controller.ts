@@ -59,7 +59,8 @@ export const verifyConsentHandler = async (req: Request, res: Response) => {
       lspId,
       returnUrl,
       redirectUrl,
-      transactionId
+      transactionId,
+      sessionId
     } = req.body;
 
     // Support both query params and body for session identifiers
@@ -78,7 +79,8 @@ export const verifyConsentHandler = async (req: Request, res: Response) => {
       lspId,
       returnUrl,
       redirectUrl,
-      transactionId: sessionKey as string
+      transactionId: sessionKey as string,
+      sessionId
     });
 
     res.status(200).json(result);

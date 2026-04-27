@@ -189,13 +189,13 @@ class FinvuAAService {
       logger.info('No transactionId provided — cannot fetch session data');
     }
 
-    let dedicatedFormData: any = null;
-    if (transactionId) {
-      const dedicatedKey = `form_data_${transactionId}`;
-      const dedicatedRaw = await RedisService.getKey(dedicatedKey);
-      dedicatedFormData = dedicatedRaw ? JSON.parse(dedicatedRaw) : null;
-      logger.info("dedicatedFormData from form_data_ key+++++++++", dedicatedFormData);
-    }
+    // let dedicatedFormData: any = null;
+    // if (transactionId) {
+    //   const dedicatedKey = `form_data_${transactionId}`;
+    //   const dedicatedRaw = await RedisService.getKey(dedicatedKey);
+    //   dedicatedFormData = dedicatedRaw ? JSON.parse(dedicatedRaw) : null;
+    //   logger.info("dedicatedFormData from form_data_ key+++++++++", dedicatedFormData);
+    // }
 
     const lspId = config.finvu.lspId || "loanseva";
     const returnUrl = `${config.finvu.returnUrl}?session_id=${uiSessionId}&transaction_id=${transactionId}`;
@@ -203,9 +203,6 @@ class FinvuAAService {
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
 
     const contactNumber =
-      dedicatedFormData?.personal_loan_information_form?.contactNumber ||
-      dedicatedFormData?.consumer_information_form?.contactNumber ||
-      dedicatedFormData?.personal_details_information_form?.contactNumber ||
       sessionData?.form_data?.personal_loan_information_form?.contactNumber ||
       sessionData?.form_data?.consumer_information_form?.contactNumber ||
       sessionData?.form_data?.personal_details_information_form?.contactNumber;
