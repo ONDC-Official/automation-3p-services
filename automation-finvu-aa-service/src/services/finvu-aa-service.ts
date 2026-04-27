@@ -241,7 +241,7 @@ class FinvuAAService {
     try {
       logger.info('Verifying consent handler', {
         userId: cust_id,
-        consentHandles: sessionData?.consent_handler ? sessionData.consent_handler : [],
+        consentHandles: ["71bdc3ac-c310-4232-ab1d-36184bb61442"],//sessionData?.consent_handler ? sessionData.consent_handler : [],
         hasSessionData: !!sessionData
       });
 
