@@ -133,7 +133,7 @@ class FinvuAAService {
   async verifyConsentHandler(
     request: ConsentVerifyRequest
   ): Promise<ConsentVerifyResponse> {
-    logger.info('[FINVU] verifyConsentHandler called', JSON.stringify(request));
+    logger.info('verifyConsentHandler called', JSON.stringify(request));
 
     const token = await tokenService.getToken();
 
@@ -142,43 +142,43 @@ class FinvuAAService {
     const transactionId = request?.transactionId;
     const uiSessionId = request?.sessionId;
 
-    logger.info('[FINVU] verifyConsentHandler called', { transactionId, uiSessionId });
+    logger.info('verifyConsentHandler called', { transactionId, uiSessionId });
 
     if (transactionId) {
       let resolvedKey = transactionId;
 
       if (uiSessionId) {
-        logger.info('[FINVU] Fetching ui-session-data from Redis', { uiSessionId });
+        logger.info('Fetching ui-session-data from Redis', { uiSessionId });
         try {
           const uiSessionRaw = await RedisService.getKey(uiSessionId);
-          logger.info('[FINVU] ui-session-data raw value', { uiSessionId, found: !!uiSessionRaw, value: uiSessionRaw });
+          logger.info('ui-session-data raw value', { uiSessionId, found: !!uiSessionRaw, value: uiSessionRaw });
 
           if (uiSessionRaw) {
             const uiSessionData = JSON.parse(uiSessionRaw);
-            logger.info('[FINVU] ui-session-data parsed', { uiSessionData });
+            logger.info('ui-session-data parsed', { uiSessionData });
 
             const subUrl = uiSessionData?.subscriberUrl;
-            logger.info('[FINVU] subscriberUrl extracted from ui-session-data', { subUrl });
+            logger.info('subscriberUrl extracted from ui-session-data', { subUrl });
 
             if (subUrl) {
               resolvedKey = `MOCK_DATA::${transactionId}::${subUrl}`;
-              logger.info('[FINVU] Resolved composite Redis key', { resolvedKey });
+              logger.info('Resolved composite Redis key', { resolvedKey });
             } else {
-              logger.info('[FINVU] subscriberUrl not found — using bare transactionId', { resolvedKey });
+              logger.info('subscriberUrl not found — using bare transactionId', { resolvedKey });
             }
           } else {
-            logger.info('[FINVU] ui-session-data not found in Redis — using bare transactionId', { uiSessionId, resolvedKey });
+            logger.info('ui-session-data not found in Redis — using bare transactionId', { uiSessionId, resolvedKey });
           }
         } catch (uiErr: any) {
-          logger.error('[FINVU] Error fetching ui-session-data', { uiSessionId, error: uiErr.message });
+          logger.error('Error fetching ui-session-data', { uiSessionId, error: uiErr.message });
         }
       } else {
-        logger.info('[FINVU] No sessionId provided — using transactionId directly', { resolvedKey });
+        logger.info('No sessionId provided — using transactionId directly', { resolvedKey });
       }
 
-      logger.info('[FINVU] Fetching session data with key', { resolvedKey });
+      logger.info('Fetching session data with key', { resolvedKey });
       sessionData = await sessionService.getSessionData(resolvedKey);
-      logger.info('[FINVU] Session data fetched', {
+      logger.info('Session data fetched', {
         resolvedKey,
         found: !!sessionData,
         transaction_id: sessionData?.transaction_id,
@@ -186,7 +186,7 @@ class FinvuAAService {
         hasFormData: !!sessionData?.form_data
       });
     } else {
-      logger.info('[FINVU] No transactionId provided — cannot fetch session data');
+      logger.info('No transactionId provided — cannot fetch session data');
     }
 
     let dedicatedFormData: any = null;
