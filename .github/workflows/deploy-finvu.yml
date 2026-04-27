@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "automation-finvu-aa-service/*"
+      - "automation-finvu-aa-service/**"
     branches:
       - main
 
