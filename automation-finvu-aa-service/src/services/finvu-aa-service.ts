@@ -157,10 +157,12 @@ class FinvuAAService {
             const uiSessionData = JSON.parse(uiSessionRaw);
             logger.info('ui-session-data parsed', { uiSessionData });
 
-            const subUrl = uiSessionData?.subscriberUrl;
+            let subUrl = uiSessionData?.subscriberUrl;
             logger.info('subscriberUrl extracted from ui-session-data', { subUrl });
 
             if (subUrl) {
+              //we are getting subscriberUrl from ui-session-data on buyer side 
+              subUrl = subUrl.replace('seller', 'buyer');
               resolvedKey = `MOCK_DATA::${transactionId}::${subUrl}`;
               logger.info('Resolved composite Redis key', { resolvedKey });
             } else {
@@ -183,7 +185,7 @@ class FinvuAAService {
         found: !!sessionData,
         transaction_id: sessionData?.transaction_id,
         hasConsentHandler: !!sessionData?.consent_handler,
-        hasFormData: !!sessionData?.form_data
+        hasFormData: !!sessionData?.formData
       });
     } else {
       logger.info('No transactionId provided — cannot fetch session data');
@@ -203,12 +205,12 @@ class FinvuAAService {
     // Support both gold loan (consumer_information_form) and personal loan (personal_loan_information_form)
 
     const contactNumber =
-      sessionData?.form_data?.personal_loan_information_form?.contactNumber ||
-      sessionData?.form_data?.consumer_information_form?.contactNumber ||
-      sessionData?.form_data?.personal_details_information_form?.contactNumber;
+      sessionData?.formData?.personal_loan_information_form?.contactNumber ||
+      sessionData?.formData?.consumer_information_form?.contactNumber ||
+      sessionData?.formData?.personal_details_information_form?.contactNumber;
 
-    logger.info("sessionData?.form_data", sessionData?.form_data);
-    logger.info("sessionData?.form_data?.personal_loan_information_form", sessionData?.form_data?.personal_loan_information_form);
+    logger.info("sessionData?.formData", sessionData?.formData);
+    logger.info("sessionData?.formData?.personal_loan_information_form", sessionData?.formData?.personal_loan_information_form);
     logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
     logger.info('Contact number in finvu service', { contactNumber });
 
