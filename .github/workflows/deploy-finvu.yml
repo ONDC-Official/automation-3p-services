@@ -173,7 +173,7 @@ jobs:
           echo "Writing secrets to .env file"
 
           ssh -i ./key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} <<'EOF'
-          REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-release-staging
+          REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-release-staging/automation-finvu-aa-service
 
           echo "Writing environment variables to .env file in \$REPO_DIR"
 
@@ -204,7 +204,7 @@ jobs:
       - name: Verify .env and docker-compose.yml files
         run: |
           ssh -i ./key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} <<EOF
-          REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-release-staging
+          REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-release-staging/automation-finvu-aa-service
           # Check if .env and docker-compose.yml files exist
           if [ ! -f \$REPO_DIR/.env ]; then
             echo ".env file not found in \$REPO_DIR!"
@@ -221,7 +221,7 @@ jobs:
         run: |
           echo "Deploying with Docker Compose"
           ssh -i ./key.pem ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} <<EOF
-          REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-release-staging
+          REPO_DIR=~/ONDC-automation-framework-staging/finvu-aa-service-release-staging/automation-finvu-aa-service
           cd \$REPO_DIR
 
           # Ensure the .env and docker-compose.yml files exist
