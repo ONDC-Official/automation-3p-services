@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "automation-finvu-aa-service/*"
+      - "automation-finvu-aa-service/**"
     branches:
       - main
       - release-staging
@@ -123,7 +123,7 @@ jobs:
 
           # Start the containers using Docker Compose
           echo "Running docker-compose up -d --build for finvu-aa-service"
-          sudo docker compose up -d --build
+          sudo docker compose -p finvu-aa-service-draft up -d --build
           EOF
 
   deploy-staging:
@@ -237,7 +237,7 @@ jobs:
 
           # Start the containers using Docker Compose
           echo "Running docker-compose up -d --build for finvu-aa-service (staging)"
-          sudo docker compose up -d --build
+          sudo docker compose -p finvu-aa-service-staging up -d --build
           EOF
 
   deploy-release:
@@ -345,5 +345,5 @@ jobs:
 
           # Start the containers using Docker Compose
           echo "Running docker-compose up -d --build for finvu-aa-service"
-          sudo docker compose up -d --build
+          sudo docker compose -p finvu-aa-service-release up -d --build
           EOF
