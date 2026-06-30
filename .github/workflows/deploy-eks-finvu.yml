@@ -1,4 +1,4 @@
-name: Build and Deploy finvu-aa-service to EKS
+name: Eks deployment 
 
 on:
   workflow_dispatch:
@@ -46,7 +46,11 @@ jobs:
             TARGET="k8/aws/helm/service-layer/values-staging.yaml"
           fi
 
-          IMAGE_TAG="${ENV}-${SEMVER}-${SHORT_SHA}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            IMAGE_TAG="${ENV}-${SEMVER}-${SHORT_SHA}-r${{ github.run_number }}"
+          else
+            IMAGE_TAG="${ENV}-${SEMVER}-${SHORT_SHA}"
+          fi
 
           echo "semver=${SEMVER}"       >> $GITHUB_OUTPUT
           echo "image_tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
