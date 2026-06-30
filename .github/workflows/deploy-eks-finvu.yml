@@ -79,7 +79,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/ondc-official/automation-finvu-aa-service
+          images: ghcr.io/ondc-official/automation-finvu-service
           tags: |
             type=raw,value=${{ needs.version.outputs.image_tag }}
             type=raw,value=latest,enable=${{ github.ref_name != 'main' }}
@@ -176,7 +176,7 @@ jobs:
         env:
           TARGET_FILE:         ${{ needs.version.outputs.target_file }}
           IMAGE_TAG:           ${{ needs.version.outputs.image_tag }}
-          EXPECTED_REPOSITORY: ghcr.io/ondc-official/automation-finvu-aa-service
+          EXPECTED_REPOSITORY: ghcr.io/ondc-official/automation-finvu-service
 
       - name: Commit and push tag update to IaC repo
         run: |
