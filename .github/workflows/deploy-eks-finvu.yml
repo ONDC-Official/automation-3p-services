@@ -1,4 +1,4 @@
-name: Build and Deploy finvu-aa-service to EKS
+name: Eks deployment 
 
 on:
   workflow_dispatch:
