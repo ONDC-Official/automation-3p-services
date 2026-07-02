@@ -24,7 +24,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
-    "ondc-automation-cache-lib": "^1.0.0"
+    "@ondc/ondc-automation-cache-lib": "^2.1.0"
     },
   "devDependencies": {
     "@types/cors": "^2.8.17",
