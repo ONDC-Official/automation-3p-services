@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { finvuAAService } from '../services/finvu-aa-service';
 import logger from '../utils/logger';
-import { RedisService } from 'ondc-automation-cache-lib';
+import { RedisService } from '@ondc/ondc-automation-cache-lib';
 
 export const generateConsentHandler = async (req: Request, res: Response) => {
 

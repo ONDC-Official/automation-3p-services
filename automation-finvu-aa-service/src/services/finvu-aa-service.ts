@@ -1,7 +1,7 @@
 import { config } from '../config/env';
 import { httpClient } from '../utils/http-client';
 import { tokenService } from './token-service';
-import { RedisService } from 'ondc-automation-cache-lib';
+import { RedisService } from '@ondc/ondc-automation-cache-lib';
 import {
   ConsentGenerateRequest,
   ConsentGenerateResponse,

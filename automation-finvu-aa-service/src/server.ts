@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import { finvuAARoutes } from './routes/finvu-aa-routes';
 import logger from './utils/logger';
-import { RedisService } from 'ondc-automation-cache-lib';
+import { RedisService } from '@ondc/ondc-automation-cache-lib';
 
 // Initialize Redis connection
 RedisService.useDb(0);
@@ -60,6 +60,9 @@ export const createServer = (): Application => {
     });
     next();
   });
+
+  // Health check
+  app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
   // Routes
   app.use('/finvu-aa', finvuAARoutes);
