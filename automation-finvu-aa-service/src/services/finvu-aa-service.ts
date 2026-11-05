@@ -213,8 +213,8 @@ class FinvuAAService {
     logger.info("sessionData?.formData?.personal_loan_information_form", sessionData?.formData?.personal_loan_information_form);
     logger.info("contactNumber in finvu service using dedicated FormData and fallback", contactNumber);
     logger.info('Contact number in finvu service', { contactNumber });
-
-    const cust_id = contactNumber ? contactNumber + "@finvu" : "6284870148@finvu";
+    logger.info('sessionDataaaaaa', JSON.stringify(sessionData));
+    const cust_id = contactNumber ? contactNumber + "@finvu" : "9988740119@finvu";
     const consentHandles = sessionData?.consent_handler
       ? sessionData.consent_handler
       : ["71bdc3ac-c310-4232-ab1d-36184bb61442"];
